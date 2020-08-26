@@ -12,7 +12,14 @@ npx degit Tom-Siegel/multi-page-svelte
 2. Go to rollup-pages.config.js and set the inputs
 
 ```javascript
-const inputs = ["main", "second"];
+const inputs = [
+  "main", //string defaults to input: src/[name].js and output: public/build/[name].js
+  {
+    input: "src/second.js",
+    output: { file: "public/build/second.js", name: "second" },
+    css: "public/build/second.css",
+  }, //object for setting more specific values for input and output of roolup configuration
+];
 ```
 
 3. Build the project
@@ -22,3 +29,21 @@ npm run build
 ```
 
 4. Set up your html-files by adding the main.js, main.css and global.css
+
+## Testing
+
+```shell
+npm run dev
+```
+
+Or
+
+```shell
+npm run start
+```
+
+Open your browser url: localhost:5000
+
+main.js --> http://localhost:5000/index.html
+
+second.js --> http://localhost:5000/second.html
