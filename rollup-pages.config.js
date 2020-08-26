@@ -14,7 +14,9 @@ const inputs = [
 ];
 const production = !process.env.ROLLUP_WATCH;
 
-//to change rollup general configuration go to createPageRollupExport (function)
+//!!!
+//To change rollup configuration go to createPageRollupExport (function)
+//!!!
 
 function serve() {
   let server;
