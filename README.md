@@ -22,13 +22,12 @@ const inputs = [
 ];
 ```
 
-3. Build the project
+3. Set up your html-files by adding the main.js, main.css and global.css
+4. Build the project
 
 ```shell
 npm run build
 ```
-
-4. Set up your html-files by adding the main.js, main.css and global.css
 
 ## Testing
 
