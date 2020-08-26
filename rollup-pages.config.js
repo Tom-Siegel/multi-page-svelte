@@ -4,8 +4,17 @@ import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 
-const inputs = ["main", "second"];
+const inputs = [
+  "main", //string defaults to input: src/[name].js and output: public/build/[name].js
+  {
+    input: "src/second.js",
+    output: { file: "public/build/second.js", name: "second" },
+    css: "public/build/second.css",
+  }, //object for setting more specific values for input and output of roolup configuration
+];
 const production = !process.env.ROLLUP_WATCH;
+
+//to change rollup general configuration go to createPageRollupExport (function)
 
 function serve() {
   let server;
@@ -34,14 +43,21 @@ function serve() {
 function createPageRollupExport(inp) {
   //nearly default config as in https://github.com/sveltejs/template
   //TODO add possibilty for different option with different inputs and destinations.
+  const t = typeof inp;
+  const input =
+    t === "string"
+      ? createPageInputByString(inp)
+      : createPageInputByObject(inp);
+  const output =
+    t === "string"
+      ? createPageOutputByString(inp)
+      : createPageOutputByObject(inp);
+  const cssPath =
+    t === "string" ? createPageCssByString(inp) : createPageCssByObject(inp);
+
   let def = {
-    input: `src/${inp}.js`,
-    output: {
-      sourcemap: false,
-      format: "iife",
-      name: `${inp}`,
-      file: `public/build/${inp}.js`,
-    },
+    input: input,
+    output: output,
     plugins: [
       svelte({
         // enable run-time checks when not in production
@@ -49,7 +65,7 @@ function createPageRollupExport(inp) {
         // we'll extract any component CSS out into
         // a separate file - better for performance
         css: (css) => {
-          css.write(`public/build/${inp}.css`);
+          css.write(cssPath);
         },
       }),
 
@@ -84,13 +100,56 @@ function createPageRollupExport(inp) {
   return def;
 }
 
+//#region utilities
+
+function createPageInputByString(inp) {
+  return `src/${inp}.js`;
+}
+
+function createPageInputByObject(inp) {
+  return isStringNotNull(inp.input) ? inp.input : "src/main.js";
+}
+
+function createPageCssByString(inp) {
+  return `public/build/${inp}.css`;
+}
+
+function createPageCssByObject(inp) {
+  return isStringNotNull(inp.css) ? inp.css : "public/build/main.css";
+}
+
+function createPageOutputByString(inp) {
+  return {
+    sourcemap: false,
+    format: "iife",
+    name: `${inp}`,
+    file: `public/build/${inp}.js`,
+  };
+}
+
+function createPageOutputByObject(inp) {
+  let def = {
+    sourcemap: false,
+    format: "iife",
+    name: "main",
+    file: `public/build/main.js`,
+  };
+
+  return Object.assign(def, inp.output);
+}
+
 function validateInputSettings(inp) {
-  return isStringNotNull(inp);
+  return (
+    isStringNotNull(inp) ||
+    (typeof inp === "object" && inp.input && inp.output && inp.css)
+  );
 }
 
 function isStringNotNull(str) {
   return typeof str === "string" && str.length > 0;
 }
+
+//#endregion
 
 export default (function () {
   let arrExportRollup = [];

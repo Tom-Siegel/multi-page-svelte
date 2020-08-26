@@ -9,6 +9,7 @@
     max-width: 240px;
     margin: 0 auto;
   }
+
   h1 {
     color: #ff3e00;
     text-transform: uppercase;
@@ -25,5 +26,5 @@
 
 <main>
   <h1>Hello {name}!</h1>
-  <p>Main Svelte-Page</p>
+  <p>Second Svelte-Page</p>
 </main>

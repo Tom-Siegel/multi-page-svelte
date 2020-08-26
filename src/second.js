@@ -1,9 +1,9 @@
-import App from "./App.svelte";
+import Second from "./Second.svelte";
 
-const app = new App({
+const app = new Second({
   target: document.body,
   props: {
-    name: "world 2",
+    name: "Second",
   },
 });
 
